@@ -1,7 +1,7 @@
 import re
 
 
-class Parser(file):
+class Parser:
     def __init__(self, file):
         self.file = file
 
