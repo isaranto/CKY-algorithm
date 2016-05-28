@@ -14,6 +14,9 @@ class Parser:
                 rules[start] = [tuple(a.split()) for a in re.split(" \| ", end)]
         return rules
 
+
+
+
     def parse_grammar_without_pipelines(self):
         rules = {}
         with open(self.file, 'r') as fp:

@@ -1,14 +1,14 @@
-Nominal -> N 
+S -> NP VP
 Nominal -> Adj N
 Nominal -> N PP
 NP -> Det Nominal
 PP -> Prep NP
 VP -> V NP
-VP -> V NP PP
-S -> VP
+VP -> VP PP
+NP -> I
 V -> saw
 Det -> the
-N -> doctor 
+N -> doctor
 N -> shirt
 Prep -> with
 Adj -> white
