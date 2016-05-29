@@ -1,51 +1,49 @@
-import re
+import numpy as np
+import Parser
+import pprint
 
 
-class Parser:
-    def __init__(self, file):
-        self.file = file
-
-    def parse_grammar(self):
-        rules = {}
-        with open(self.file, 'r') as fp:
-            for line in fp:
-                start = re.split(" -> ", line.strip('\n'))[0]
-                end = re.split(" -> ", line.strip('\n'))[1]
-                rules[start] = [tuple(a.split()) for a in re.split(" \| ", end)]
-        return rules
-
-
-
-
-    def parse_grammar_without_pipelines(self):
-        rules = {}
-        with open(self.file, 'r') as fp:
-            for line in fp:
-                start = re.split(" -> ", line.strip('\n'))[0]
-                end = re.split(" -> ", line.strip('\n'))[1]
+class Cky:
+    def __init__(self, sentence, grm):
+        self.rows = len(sentence.split())
+        self.cols = len(sentence.split())+1
+        self.rules = grm.rules
+        self.vocab = grm.vocab
+        self.matrix = {}
+        for j in range(self.cols):
+            for i in range(self.rows-1, -1, -1):
+                self.matrix[i, j] = None if j <= i else []
                 try:
-                    rules[start].append(tuple(end.split()))
+                    if j-i == 1:
+                        self.matrix[i, j].append(self.vocab[sentence.split()[j-1]])
                 except KeyError:
-                    rules[start] = []
-                    rules[start].append(tuple(end.split()))
-        return rules
+                    pass
+        pp = pprint.PrettyPrinter(depth=6)
+        pp.pprint(self.matrix)
 
-    def print_rules(rules = {}):
-        for key, value in rules.items():
-            list = []
-            for tuple in value:
-                for el in tuple:
-                    list.append(el)
-                list.append("|")
-            #print key, " -> ", " | ".join([str(tuple[i]) for tuple in value for
-                #  i in range(len(tuple))])
-            print key, " -> ", " ".join(list[:-1])
+    def run_cky(self):
+        print "Running CKY algorithm"
+        for j in range(1, self.cols):
+            counter = j-1  #access only above diagonal of matrix
+            for i in range(counter-1, -1, -1):
+                one = self.matrix[i, j-1]
+                two = self.matrix[i+1, j]
+                if one and two:
+                    self.matrix[i, j] = self.rules[(one, two)]
+                else:
+                    self.matrix[i, j] = None
+
+
+
+
 
 
 if __name__ == '__main__':
-    parser = Parser('grammar_new')
-    #rules = parse_grammar('grammar.txt')
-    #print_rules(rules)
-    rules = parser.parse_grammar_without_pipelines()
-    print rules
+    _file = 'grammar_new'
+    grammar = Parser.Grammar(_file)
+    rules = grammar.rules
+    grammar.print_me()
+    _sentence = "I saw the doctor with the white shirt"
+    cky = Cky(_sentence, grammar)
+    cky.run_cky()
 

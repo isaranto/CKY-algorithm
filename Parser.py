@@ -3,6 +3,12 @@ import re
 
 class Rule:
     def __init__(self, line):
+        """
+        Rule is being parsed like this: eg. "S -> NP VP" will become an object Rule with non-terminal = S,
+        first = NP and second VP
+        :param line:
+        :return:
+        """
         start = re.split(" -> ", line.strip('\n'))[0]
         end = re.split(" -> ", line.strip('\n'))[1]
         self.non_terminal = start
@@ -23,21 +29,31 @@ class Rule:
 
 class Grammar:
     def __init__(self, file):
+        """
+        Rules are being parsed into a dictionary of [first, second] = non_terminal
+        :param file:
+        :return:
+        """
         _dict = {}
+        vocab = {}
         with open(file, 'r') as fp:
             for line in fp:
                 rule = Rule(line)
-                try:
-                    _dict[rule.non_terminal].append(rule)
-                except KeyError:
-                    _dict[rule.non_terminal] = []
-                    _dict[rule.non_terminal].append(rule)
+                if rule.terminal:
+                    vocab[rule.word] = rule.non_terminal
+                else:
+                    _dict[rule.first, rule.second] = rule.non_terminal
         self.rules = _dict
+        self.vocab = vocab
 
     def print_me(self):
+        print "Grammar Rules"
         for key, value in self.rules.items():
-            for rule in value:
-                rule.print_me()
+            tmp = Rule(str(value)+" -> "+str(key))
+            tmp.print_me()
+        print "\nVocabulary :"
+        for key, value in self.vocab.items():
+            print value, " -> ", key
 
 
 if __name__ == '__main__':
@@ -45,3 +61,4 @@ if __name__ == '__main__':
     grammar = Grammar(_file)
     rules = grammar.rules
     grammar.print_me()
+    print grammar.rules
