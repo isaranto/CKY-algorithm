@@ -12,30 +12,41 @@ class Cky:
         self.matrix = {}
         for j in range(self.cols):
             for i in range(self.rows-1, -1, -1):
-                self.matrix[i, j] = None if j <= i else []
+                # self.matrix[i, j] = None if j <= i else []
+                self.matrix[i, j] = [None]
                 try:
                     if j-i == 1:
                         self.matrix[i, j].append(self.vocab[sentence.split()[j-1]])
+                        del self.matrix[i, j][0]
                 except KeyError:
                     pass
-        pp = pprint.PrettyPrinter(depth=6)
-        pp.pprint(self.matrix)
+
+    def print_matrix(self):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                for item in self.matrix[i, j]:
+                    print str(item).ljust(15),
+            print ""
 
     def run_cky(self):
         print "Running CKY algorithm"
-        for j in range(1, self.cols):
-            counter = j-1  #access only above diagonal of matrix
+        for j in range(self.cols):
+            counter = j-1  # access only above diagonal of matrix
             for i in range(counter-1, -1, -1):
-                one = self.matrix[i, j-1]
-                two = self.matrix[i+1, j]
-                if one and two:
-                    self.matrix[i, j] = self.rules[(one, two)]
-                else:
-                    self.matrix[i, j] = None
-
-
-
-
+                #ones = self.matrix[i, j-1]
+                lefts = next(self.matrix[i, col] for col in range(j, 0, -1) if any(x is not None for x in
+                                                                                   self.matrix[i, col]))
+                downs = next(self.matrix[row, j] for row in range(i, self.rows) if any(x is not None for x in
+                                                                                       self.matrix[row, j]))
+                #ones = next(self.matrix[i, k] for k in range(j, counter, -1) if not self.matrix[i, k])
+                if lefts and downs:
+                    for left in lefts:
+                        for down in downs:
+                            try:
+                                self.matrix[i, j] = [self.rules[left, down]]
+                            except:
+                                #self.matrix[i, j] = None
+                                pass
 
 
 if __name__ == '__main__':
@@ -46,4 +57,6 @@ if __name__ == '__main__':
     _sentence = "I saw the doctor with the white shirt"
     cky = Cky(_sentence, grammar)
     cky.run_cky()
+    #print rules
+    cky.print_matrix()
 
