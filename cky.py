@@ -48,15 +48,39 @@ class Cky:
                                 #self.matrix[i, j] = None
                                 pass
 
+    def level_tree(self, level, row, col):
+        try:
+            lefts = next(self.matrix[row, x] for x in range(col-1, 0, -1) if any(y is not None for y in
+                                                                                   self.matrix[row, x]))
+            downs = next(self.matrix[x, col] for x in range(row+1, self.rows) if any(y is not None for y in
+                                                                                       self.matrix[row, col]))
+            if lefts and downs:
+                print "\t"*level, "\t"*level, self.matrix[row, col]
+                print "\t"*level, "left branch:", lefts, "right branch:", downs
+        except StopIteration:
+            pass
+
+
+    def print_tree(self):
+        level = 0
+        for j in range(self.cols-1, 0, -1):
+            for i in range(0, self.rows):
+                self.level_tree(level, i, j)
+                level += 1
+
+
+
+
 
 if __name__ == '__main__':
     _file = 'grammar_new'
     grammar = Parser.Grammar(_file)
     rules = grammar.rules
     grammar.print_me()
-    _sentence = "I saw the doctor with the white shirt"
-    cky = Cky(_sentence, grammar)
+    _sentence1 = "I saw the doctor with the white shirt"
+    _sentence2 = "I killed the doctor with the big knife"
+    cky = Cky(_sentence2, grammar)
     cky.run_cky()
-    #print rules
+    # print rules
     cky.print_matrix()
-
+    cky.print_tree()
