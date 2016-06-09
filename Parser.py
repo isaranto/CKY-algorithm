@@ -54,6 +54,7 @@ class Grammar:
         print "\nVocabulary :"
         for key, value in self.vocab.items():
             print value, " -> ", key
+        print "\n"
 
 
 if __name__ == '__main__':

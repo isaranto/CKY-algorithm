@@ -25,9 +25,10 @@ class Cky:
                 for item in self.matrix[i, j]:
                     print str(item).ljust(15),
             print ""
+        print "\n"
 
     def run_cky(self):
-        print "Running CKY algorithm"
+        print "Running CKY algorithm..."
         for j in range(self.cols):
             counter = j-1  # access only above diagonal of matrix
             for i in range(counter-1, -1, -1):
@@ -45,6 +46,10 @@ class Cky:
                             except KeyError:
                                 # self.matrix[i, j] = None
                                 pass
+        if 'S' in self.matrix[0, self.cols-1]:
+            print "The Sentence belongs to the grammar\n"
+        else:
+            print "The Sentence does not belong to the belongs to the grammar\n"
 
     def level_tree(self, level, row, col):
         try:
