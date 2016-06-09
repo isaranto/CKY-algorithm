@@ -1,6 +1,4 @@
-import numpy as np
 import Parser
-import pprint
 
 
 class Cky:
@@ -33,19 +31,19 @@ class Cky:
         for j in range(self.cols):
             counter = j-1  # access only above diagonal of matrix
             for i in range(counter-1, -1, -1):
-                #ones = self.matrix[i, j-1]
+                # ones = self.matrix[i, j-1]
                 lefts = next(self.matrix[i, col] for col in range(j, 0, -1) if any(x is not None for x in
                                                                                    self.matrix[i, col]))
                 downs = next(self.matrix[row, j] for row in range(i, self.rows) if any(x is not None for x in
                                                                                        self.matrix[row, j]))
-                #ones = next(self.matrix[i, k] for k in range(j, counter, -1) if not self.matrix[i, k])
+                # ones = next(self.matrix[i, k] for k in range(j, counter, -1) if not self.matrix[i, k])
                 if lefts and downs:
                     for left in lefts:
                         for down in downs:
                             try:
                                 self.matrix[i, j] = [self.rules[left, down]]
-                            except:
-                                #self.matrix[i, j] = None
+                            except KeyError:
+                                # self.matrix[i, j] = None
                                 pass
 
     def level_tree(self, level, row, col):
@@ -60,7 +58,6 @@ class Cky:
         except StopIteration:
             pass
 
-
     def print_tree(self):
         level = 0
         for j in range(self.cols-1, 0, -1):
@@ -69,18 +66,14 @@ class Cky:
                 level += 1
 
 
-
-
-
 if __name__ == '__main__':
-    _file = 'grammar_new'
+    _file = 'grammar.txt'
     grammar = Parser.Grammar(_file)
     rules = grammar.rules
     grammar.print_me()
     _sentence1 = "I saw the doctor with the white shirt"
-    _sentence2 = "I killed the doctor with the big knife"
+    _sentence2 = "I met the doctor with the funny look"
     cky = Cky(_sentence2, grammar)
     cky.run_cky()
-    # print rules
     cky.print_matrix()
     cky.print_tree()
