@@ -58,7 +58,7 @@ class Grammar:
 
 
 if __name__ == '__main__':
-    _file = 'grammar_new'
+    _file = 'grammar.txt'
     grammar = Grammar(_file)
     rules = grammar.rules
     grammar.print_me()
