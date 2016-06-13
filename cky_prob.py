@@ -47,8 +47,9 @@ class Cky_prob:
                             except KeyError:
                                 # self.matrix[i, j] = left[0], down[0]None
                                 pass
-        if 'S' in self.matrix[0, self.cols-1]:
-            print "The Sentence belongs to the grammar\n"
+        if 'S' in self.matrix[0, self.cols-1][0]:
+            print "The Sentence belongs to the grammar and has a probability equal to", self.matrix[0, self.cols-1][
+                0][1], "\n"
         else:
             print "The Sentence does not belong to the grammar\n"
 
